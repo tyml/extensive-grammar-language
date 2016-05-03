@@ -29,6 +29,8 @@ In the following let `S` be an `A`-*String*.
 
 These constructs are atomic *Expressions*:
 
+* `.`  
+  Is matched by `S` iff `S` consists of exactly one *Character*.
 * `Sym` where `Sym` is a *Symbol* defined by a *Production*.  
   Is matched by `S` iff `S` matches the *Expression* that defines `Sym`.
 
