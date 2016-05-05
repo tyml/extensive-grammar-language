@@ -17,7 +17,7 @@ The Expressive Grammar Language (EGL) can be used to specify formal languages ov
 An **Identifier** is an *ASCII*-*String* that matches the regular expression `[a-zA-Z][a-zA-Z0-9]`. 
 A **Symbol** is an *Identifier* that is defined by a *Production*.  
 
-A **Production Rule** (or just **Production**) is an *ASCII*-*String* that starts with an *Identifier* that names the *Symbol* to be defined, followed by *Whitespaces*, the equals sign ("="), further *Whitespaces*, an *Expression*, more *Whitespaces* and a dot character (".") that ends the *Production*.
+A **Production Rule** (or just **Production**) is an *ASCII*-*String* that starts with an *Identifier* that names the *Symbol* to be defined, followed by *Whitespaces*, two colons (":"), the equals sign ("="), further *Whitespaces* and an *Expression* that ends the *Production*.
 
 A **Grammar** over an *Alphabet* `A` consists of *Productions* and a *Symbol* called the **Start Symbol**.
 An `A`-*String* is a member of the formal language described by a *Grammar* over an *Alphabet* `A`, iff it matches the *Expression* that defines the *Start Symbol*.
@@ -105,3 +105,53 @@ Is matched by any Char with a value among the characters enumerated. Enumeration
 
 * `"Str"` and `'Str'` where `Str` is an *ASCII-String*.  
   Is matched by the *Unicode-String* that is equal to `Str`.
+  
+## Examples
+### Simple Function Definition
+
+A simple grammar over the unicode alphabet that describes simple function definitions could look like:
+```
+Func ::= "func" WS Name WS? "(" WS? (Arg (WS? "," WS? Arg)*)? ")" WS? "=" WS? Body
+WS ::= " "+
+Name ::= Ident
+Ident ::= [a-zA-Z][a-zA-Z0-9]*
+Arg ::= Type WS Name
+Type ::= Ident
+Body ::= .*
+```
+
+The string `func  fun(int  arg1,  int  arg2)  =  expr` that matches the grammar yields the following two *Parse Trees*:
+![Parse Trees](ParseTrees.svg)
+
+The second *Parse Tree* differs from the first in the `Body` element that encloses the text of the last `WS` node now.
+
+### Grammar of EGL
+
+Without the unicode extensions, the *EGL* language can be described by the following `EGL` grammar over the unicode alphabet:
+```
+Production ::= Identifier WS* "::=" WS* Expr WS*
+
+Identifier ::= [a-zA-Z][a-zA-Z0-9]*
+WS = #x09 | #x0A | #x0D | #x20
+
+Expr ::= Symbol | Concat | Dot | Symbol | "(" Expr ")" | Without | Opt | Star | PosStar
+
+Dot ::= "."
+Symbol ::= Identifier
+
+Disj ::= Expr WS* "|" WS* ExprWoD
+ExprWoD ::= Expr \ Disj
+
+Concat ::= (ExprWoD \ Symbol) WS* ExprWoCD | ExprWoD WS* (ExprWoCD \ Symbol) | (Symbol WS+ Symbol)
+ExprWoCD ::= ExprWoD \ Concat
+
+Without ::= ExprWoCD WS* "\" WS* ExprWoCDW
+ExprWoCDW ::= ExprWoCD \ Without
+
+Opt ::= ExprWoCDW WS* "?"
+Star ::= ExprWoCDW WS* "*"
+PosStar ::= ExprWoCDW WS* "+"
+```
+
+This grammar is unambiguous, i.e. for each matching string there is exactly one *Syntax Tree*.
+Note that even though the grammar describes strings over the unicode alphabet, all unicode strings that match this grammar are already ASCII strings.
