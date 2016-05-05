@@ -121,7 +121,7 @@ Body ::= .*
 ```
 
 The string `func  fun(int  arg1,  int  arg2)  =  expr` that matches the grammar yields the following two *Parse Trees*:
-![Parse Trees](ParseTrees.svg)
+![Parse Trees](ParseTrees.png)
 
 The second *Parse Tree* differs from the first in the `Body` element that encloses the text of the last `WS` node now.
 
