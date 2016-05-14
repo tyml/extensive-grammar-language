@@ -152,7 +152,7 @@ Production ::= Identifier WS* "::=" WS* Expr WS*
 Identifier ::= [a-zA-Z][a-zA-Z0-9]*
 WS ::= #x09 | #x0A | #x0D | #x20
 
-Expr ::= Dot || Symbol || "(" Expr ")" || MatchFirst || Disj || CondDisj || Concat || Without || Opt || Star || PosStar
+Expr ::= Dot || Symbol || "(" Expr ")" || Disj || CondDisj || Concat || Without || Opt || Star || PosStar
 
 Dot ::= "."
 Symbol ::= Identifier
