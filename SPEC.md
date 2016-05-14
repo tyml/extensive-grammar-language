@@ -4,23 +4,25 @@ This is still a draft!
 # Expressive Grammar Language 1.0
 ## Abstract
 The Expressive Grammar Language (EGL) can be used to specify formal languages over an arbitrary alphabet.
-*EGL* can describe all context free languages and by using the *Without Expression* or defining constraints even some non context free languages.
+*EGL* can describe all context free languages and by using the *Without Expression* or 
+defining constraints even some non context free languages.
 
 ## Definitions
-[ Definiton: An **Alphabet** is a set of distinguishable elements that are called **Characters** ]  
-[ Definition: A **String** over an *Alphabet* `A` (or just an `A`-**String**) is a finite sequence in `A` ]  
-[ Definition: **ASCII** refers to the *Alphabet* as defined by the ASCII charset ]
+An **Alphabet** is a set of distinguishable elements that are called **Characters**.
+A **String** over an *Alphabet* `A` (or just an `A`-**String**) is a finite sequence in `A`.
+**ASCII** refers to the *Alphabet* as defined by the ASCII charset.
 
 ## Productions
-
 **Whitespaces** is an *ASCII*-*String* that consists of zero or more whitespace characters (ASCII hex-codes 09, 0A, 0D, 20).
 An **Identifier** is an *ASCII*-*String* that matches the regular expression `[a-zA-Z][a-zA-Z0-9]`. 
 A **Symbol** is an *Identifier* that is defined by a *Production*.  
 
-A **Production Rule** (or just **Production**) is an *ASCII*-*String* that starts with an *Identifier* that names the *Symbol* to be defined, followed by *Whitespaces*, two colons (":"), the equals sign ("="), further *Whitespaces* and an *Expression* that ends the *Production* definition.
+A **Production Rule** (or just **Production**) is an *ASCII*-*String* that starts with an *Identifier* that names the *Symbol* to be defined, 
+followed by *Whitespaces*, two colons (":"), the equals sign ("="), further *Whitespaces* and an *Expression* that ends the *Production* definition.
 
 A **Grammar** over an *Alphabet* `A` consists of *Productions* and a *Symbol* called the **Start Symbol**.
-An `A`-*String* is a member of the formal language described by a *Grammar* over an *Alphabet* `A`, iff it matches the *Expression* that defines the *Start Symbol*.
+An `A`-*String* is a member of the formal language described by a *Grammar* over an *Alphabet* `A`, 
+iff it matches the *Expression* that defines the *Start Symbol*.
 
 ## Expressions
 An **Expression** is an *ASCII*-*String* that describes *Strings* over a certain *Alphabet* `A`.
@@ -34,7 +36,8 @@ These constructs are atomic *Expressions*:
 * `Sym` where `Sym` is a *Symbol* defined by a *Production*.  
   Is matched by `S` iff `S` matches the *Expression* that defines `Sym`.
 
-Depending on the used *Alphabet* `A` more atomic *Expressions* can be defined. See chapter *Unicode* for further atomic *Expressions* regarding *Unicode*.
+Depending on the used *Alphabet* `A` more atomic *Expressions* can be defined. 
+See chapter *Unicode* for further atomic *Expressions* regarding *Unicode*.
 
 If `Expr1` and `Expr2` are *Expressions*, the following *ASCII*-*Strings* are *Expressions* too:
 
@@ -42,14 +45,20 @@ If `Expr1` and `Expr2` are *Expressions*, the following *ASCII*-*Strings* are *E
 * `(Expr1)`  and `Expr1` surrounded by *Whitespaces*.  
 Is matched by a `S` iff `S` matches `Expr1`.
 
+* Disjunction: `Expr1 | Expr2`  
+Is matched by `S` iff `S` matches `Expr1` or `Expr2`. This is not an exclusive or, thus `S` can match both `Expr1` and `Expr2`.
+
+* Conditional Disjunction: `Expr1 || Expr2`  
+Is matched by `S` iff `S` matches `Expr1 | (Expr2 \ Expr1)`. This construct is used to make the resulting *Parse Tree* unambigious, 
+since strings matching both expressions will only lead to one *Parse Tree* with `Expr1` as symbol.
+Note that `A || B || C` is equivalent to `A || (B || C)`, `A || (B | C\B)`, `A | (B | C\B)\A` and thus `A | B\A | C\B\A`.
+
 * Concatenation: `Expr1 Expr2`  
 Is matched by `S` iff `S` is the concatenization of two `A`-*Strings* `S1` and `S2` so that `S1` matches `Expr1` and `S2` matches `Expr2`.
-  
-* Disjunction: `Expr1 | Expr2`  
-Is matched by `S` iff `S` matches `Expr1` or `Expr2`. This is not an exclusive or, thus `S` can match both expressions.
 
 * Without: `Expr1 \ Expr2`  
-Is matched by `S` iff `S` matches `Expr1` but not `Expr2`.
+Is matched by `S` iff `S` matches `Expr1` but not `Expr2`. 
+The *Without* operator is left-associative, i.e. `A \ B \ C` and `(A \ B) \ C` are equivalent.
   
 * Optional: `Expr1?`  
 Is matched by `S` iff `S` has length zero or `S` matches `Expr1`.
@@ -60,24 +69,31 @@ Is matched by `S` iff `S` has length zero or matches `Expr Expr*`.
 * Positive Star: `Expr+`  
 Is matched by `S` iff `S` matches `Expr Expr*`.
 
-## Parse Trees
 
+The mentioned operators are right-associative if not said otherwise and 
+are ordered ascending by their precedence, thus `A \ B | C D?` and `(A \ B) | (C (D?))` are matching the same *Strings*.
+
+## Parse Trees
 Let `A` be an *Alphabet* and `S` an `A`-*String* that matches a certain *Grammar* over the *Alphabet* `A`.
 
-[Definition: A **Text Fragment** of a *String* `Str` is a pair of two natural numbers. The first refers to the start position within `Str`, the second to the length of the *Text Fragment* which can be zero. Two *Text Fragments* are equal, if the *Strings* they are from, their positions and their lengths are equal. The **Text** of a *Text Fragment* is the substring of `Str` that starts at the given position and has the given length.  ]
+A **Text Fragment** of a *String* `Str` is a pair of two natural numbers. The first refers to the start position within `Str`, 
+the second to the length of the *Text Fragment* which can be zero. Two *Text Fragments* are equal, 
+if the *Strings* they are from, their positions and their lengths are equal. 
+The **Text** of a *Text Fragment* is the substring of `Str` that starts at the given position and has the given length.
 
 Note that even though the *Text* of two *Text Fragments* can be equal, the *Text Fragments* itself do not have to.
 
 **Parse Trees** of `S` are trees whose nodes are the *Text Fragments* of `S` together with the *Symbol* the *Text Fragment* has matched with.
 The **root node** of this tree is the *Start Symbol* of the *Grammar* together with the *Text Fragment* of `S` that encloses `S`.
 
-Children of a node are constructed by matching the node's text fragment `Tf` with the *Expression* `Expr` that defines the node's *Symbol*. For each *Symbol* `Sym` within `Expr` that is matched with a sub text fragment `Tfs` of `Tf` a new node containing `Tfs` and `Sym` is added as child node. These child nodes are ordered.
+Children of a node are constructed by matching the node's text fragment `Tf` with the *Expression* `Expr` that defines the node's *Symbol*. 
+For each *Symbol* `Sym` within `Expr` that is matched with a sub text fragment `Tfs` of `Tf` a new node containing `Tfs` and `Sym` is added as child node. These child nodes are ordered.
 
-*Parse Trees* are like syntax trees yielded by context free grammars, however, *Parse Trees* do not contain terminal nodes and nodes can have arbitrary many children since symbols within *Star Expressions* can be matched multiple times.
+*Parse Trees* are like syntax trees yielded by context free grammars, however, 
+*Parse Trees* do not contain terminal nodes and nodes can have arbitrary many children since symbols within *Star Expressions* can be matched multiple times.
 
 ## Unicode
-[ Definition: **Unicode** refers to the *Alphabet* as defined by the *Unicode* charset. ]  
-Accordingly, all unicode *Characters* can be represented by their code point.
+**Unicode** refers to the *Alphabet* as defined by the *Unicode* charset. Accordingly, all unicode *Characters* can be represented by their code point.
 
 A **Unicode Printable Character** is a *Unicode Character* whose hexadecimal code point is in the following list:
 
@@ -119,6 +135,7 @@ Arg ::= Type WS Name
 Type ::= Ident
 Body ::= .*
 ```
+The start symbol of the grammar is `Func`.
 
 The string `func  fun(int  arg1,  int  arg2)  =  expr` that matches the grammar yields the following two *Parse Trees*:
 
@@ -127,32 +144,50 @@ The string `func  fun(int  arg1,  int  arg2)  =  expr` that matches the grammar 
 The second *Parse Tree* differs from the first in the `Body` element that encloses the text of the last `WS` node now.
 
 ### Grammar of EGL Productions
-
-Without the unicode extensions, the *EGL* language can be described by the following `EGL` grammar over the unicode alphabet:
+Without the unicode extensions, a valid *EGL* production is an *ASCII* string that matches 
+the unicode grammar with the start symbol `Production` and the following rules:
 ```
 Production ::= Identifier WS* "::=" WS* Expr WS*
 
 Identifier ::= [a-zA-Z][a-zA-Z0-9]*
-WS = #x09 | #x0A | #x0D | #x20
+WS ::= #x09 | #x0A | #x0D | #x20
 
-Expr ::= Symbol | Concat | Dot | Symbol | "(" Expr ")" | Without | Opt | Star | PosStar
+Expr ::= Dot || Symbol || "(" Expr ")" || MatchFirst || Disj || CondDisj || Concat || Without || Opt || Star || PosStar
 
 Dot ::= "."
 Symbol ::= Identifier
 
-Disj ::= Expr WS* "|" WS* ExprWoD
-ExprWoD ::= Expr \ Disj
+CondDisj ::= (Expr \ CondDisj) WS* "||" WS* Expr
+Disj ::= (Expr \ Disj) WS* "|" WS* Expr
 
-Concat ::= (ExprWoD \ Symbol) WS* ExprWoCD | ExprWoD WS* (ExprWoCD \ Symbol) | (Symbol WS+ Symbol)
-ExprWoCD ::= ExprWoD \ Concat
+Concat ::= (Expr \ Concat) WS* Expr
 
-Without ::= ExprWoCD WS* "\" WS* ExprWoCDW
-ExprWoCDW ::= ExprWoCD \ Without
+Without ::= Expr WS* "\" WS* (Expr \ Without)
 
-Opt ::= ExprWoCDW WS* "?"
-Star ::= ExprWoCDW WS* "*"
-PosStar ::= ExprWoCDW WS* "+"
+Opt ::= Expr WS* "?"
+Star ::= Expr WS* "*"
+PosStar ::= Expr WS* "+"
 ```
 
-This grammar is unambiguous, i.e. for each matching string there is exactly one *Syntax Tree*.
-Note that even though the grammar describes strings over the unicode alphabet, all unicode strings that match this grammar are already ASCII strings.
+This grammar is unambiguous, i.e. for each matching string there is exactly one *Parse Tree*. This is achieved by the *Conditional Disjunction* construct.
+Note that even though the grammar describes strings over the unicode alphabet, 
+all unicode strings that match this grammar are already ASCII strings.
+
+The following productions describe additional expressions for unicode grammars:
+```
+AdditionalExpr ::= CodePointRef RangeList String1 String2
+
+CodePointRef ::= "#x" [0-9]+
+Ascii ::= [#x00-#x80]
+
+RangeChar ::= Ascii \ "-" \ "]" \ "["
+RangeElement ::= CodePointRange | CharRange | RangeChar | CodePoint
+CodePointRange ::= CodePointRef WS* "-" WS* CodePointRef
+CharRange ::= RangeChar WS* "-" WS* RangeChar
+RangeList ::= "[" (WS* RangeElement)* "]"
+
+StringChar ::= Ascii \ ['"]
+String1 ::= "'" StringChar+ "'"
+String2 ::= '"' StringChar+ '"'
+
+```
