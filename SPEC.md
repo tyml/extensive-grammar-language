@@ -4,8 +4,8 @@ This is still a draft!
 # Expressive Grammar Language 1.0
 ## Abstract
 The Expressive Grammar Language (EGL) can be used to specify formal languages over an arbitrary alphabet.
-*EGL* can describe all context free languages and by using the *Without Expression* or 
-defining constraints even some non context free languages.
+*EGL* can describe all context free languages and also some non context free languages by using the *Without Expression* or 
+by defining constraints.
 
 ## Definitions
 An **Alphabet** is a set of distinguishable elements that are called **Characters**.
@@ -17,7 +17,7 @@ A **String** over an *Alphabet* `A` (or just an `A`-**String**) is a finite sequ
 An **Identifier** is an *ASCII*-*String* that matches the regular expression `[a-zA-Z][a-zA-Z0-9]`. 
 A **Symbol** is an *Identifier* that is defined by a *Production*.  
 
-A **Production Rule** (or just **Production**) is an *ASCII*-*String* that starts with an *Identifier* that names the *Symbol* to be defined, 
+A **Production Rule** (or just **Production**) is an *ASCII*-*String* that starts with an *Identifier* that names the *Symbol* to be defined 
 followed by *Whitespaces*, two colons (":"), the equals sign ("="), further *Whitespaces* and an *Expression* that ends the *Production* definition.
 
 A **Grammar** over an *Alphabet* `A` consists of *Productions* and a *Symbol* called the **Start Symbol**.
@@ -32,53 +32,53 @@ In the following let `S` be an `A`-*String*.
 These constructs are atomic *Expressions*:
 
 * `.`  
-  Is matched by `S` iff `S` consists of exactly one *Character*.
-* `Sym` where `Sym` is a *Symbol* defined by a *Production*.  
-  Is matched by `S` iff `S` matches the *Expression* that defines `Sym`.
+is matched by `S` iff `S` consists of exactly one *Character*.
+* `Sym`, where `Sym` is a *Symbol* defined by a *Production*,  
+is matched by `S` iff `S` matches the *Expression* that defines `Sym`.
 
-Depending on the used *Alphabet* `A` more atomic *Expressions* can be defined. 
+Depending on the used *Alphabet* `A`, more atomic *Expressions* can be defined. 
 See chapter *Unicode* for further atomic *Expressions* regarding *Unicode*.
 
-If `Expr1` and `Expr2` are *Expressions*, the following *ASCII*-*Strings* are *Expressions* too:
+If `Expr1` and `Expr2` are *Expressions*, the following *ASCII*-*Strings* are *Expressions* also:
 
 
-* `(Expr1)`  and `Expr1` surrounded by *Whitespaces*.  
-Is matched by a `S` iff `S` matches `Expr1`.
+* `(Expr1)`  and `Expr1` surrounded by *Whitespaces*  
+are matched by a `S` iff `S` matches `Expr1`.
 
 * Disjunction: `Expr1 | Expr2`  
-Is matched by `S` iff `S` matches `Expr1` or `Expr2`. This is not an exclusive or, thus `S` can match both `Expr1` and `Expr2`.
+is matched by `S` iff `S` matches `Expr1` or `Expr2`. This is not an exclusive disjunction, thus `S` can match both `Expr1` and `Expr2`.
 
 * Conditional Disjunction: `Expr1 || Expr2`  
-Is matched by `S` iff `S` matches `Expr1 | (Expr2 \ Expr1)`. This construct is used to make the resulting *Parse Tree* unambigious, 
+is matched by `S` iff `S` matches `Expr1 | (Expr2 \ Expr1)`. This construct is used to make the resulting *Parse Tree* unambigious, 
 since strings matching both expressions will only lead to one *Parse Tree* with `Expr1` as symbol.
 Note that `A || B || C` is equivalent to `A || (B || C)`, `A || (B | C\B)`, `A | (B | C\B)\A` and thus `A | B\A | C\B\A`.
 
 * Concatenation: `Expr1 Expr2`  
-Is matched by `S` iff `S` is the concatenization of two `A`-*Strings* `S1` and `S2` so that `S1` matches `Expr1` and `S2` matches `Expr2`.
+is matched by `S` iff `S` is the concatenization of two `A`-*Strings* `S1` and `S2` so that `S1` matches `Expr1` and `S2` matches `Expr2`.
 
 * Without: `Expr1 \ Expr2`  
-Is matched by `S` iff `S` matches `Expr1` but not `Expr2`. 
+is matched by `S` iff `S` matches `Expr1` but not `Expr2`. 
 The *Without* operator is left-associative, i.e. `A \ B \ C` and `(A \ B) \ C` are equivalent.
   
 * Optional: `Expr1?`  
-Is matched by `S` iff `S` has length zero or `S` matches `Expr1`.
+is matched by `S` iff `S` has length zero or `S` matches `Expr1`.
   
 * Star: `Expr*`  
-Is matched by `S` iff `S` has length zero or matches `Expr Expr*`.
+is matched by `S` iff `S` has length zero or matches `Expr Expr*`.
 
 * Positive Star: `Expr+`  
-Is matched by `S` iff `S` matches `Expr Expr*`.
+is matched by `S` iff `S` matches `Expr Expr*`.
 
 
 The mentioned operators are right-associative if not said otherwise and 
-are ordered ascending by their precedence, thus `A \ B | C D?` and `(A \ B) | (C (D?))` are matching the same *Strings*.
+are ordered ascending by their precedence. Thus `A \ B | C D?` and `(A \ B) | (C (D?))` are matching the same *Strings*.
 
 ## Parse Trees
 Let `A` be an *Alphabet* and `S` an `A`-*String* that matches a certain *Grammar* over the *Alphabet* `A`.
 
-A **Text Fragment** of a *String* `Str` is a pair of two natural numbers. The first refers to the start position within `Str`, 
-the second to the length of the *Text Fragment* which can be zero. Two *Text Fragments* are equal, 
-if the *Strings* they are from, their positions and their lengths are equal. 
+A **Text Fragment** of a *String* `Str` is a pair of two natural numbers. The first refers to the start position within `Str` and 
+the second refers to the length of the *Text Fragment* which can be zero. Two *Text Fragments* are equal 
+iff the *Strings* they are from, their positions and their lengths are equal. 
 The **Text** of a *Text Fragment* is the substring of `Str` that starts at the given position and has the given length.
 
 Note that even though the *Text* of two *Text Fragments* can be equal, the *Text Fragments* itself do not have to.
@@ -87,10 +87,10 @@ Note that even though the *Text* of two *Text Fragments* can be equal, the *Text
 The **root node** of this tree is the *Start Symbol* of the *Grammar* together with the *Text Fragment* of `S` that encloses `S`.
 
 Children of a node are constructed by matching the node's text fragment `Tf` with the *Expression* `Expr` that defines the node's *Symbol*. 
-For each *Symbol* `Sym` within `Expr` that is matched with a sub text fragment `Tfs` of `Tf` a new node containing `Tfs` and `Sym` is added as child node. These child nodes are ordered.
+For each *Symbol* `Sym` within `Expr` that is matched with a sub text fragment `Tfs` of `Tf`, a new node containing `Tfs` and `Sym` is added as child node. These child nodes are ordered.
 
-*Parse Trees* are like syntax trees yielded by context free grammars, however, 
-*Parse Trees* do not contain terminal nodes and nodes can have arbitrary many children since symbols within *Star Expressions* can be matched multiple times.
+*Parse Trees* are like syntax trees yielded by context free grammars. 
+However, *Parse Trees* do not contain terminal nodes and nodes can have arbitrary many children since symbols within *Star Expressions* can be matched multiple times.
 
 ## Unicode
 **Unicode** refers to the *Alphabet* as defined by the *Unicode* charset. Accordingly, all unicode *Characters* can be represented by their code point.
