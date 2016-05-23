@@ -1,16 +1,26 @@
-
-This is still a draft!
-
-# Expressive Grammar Language 1.0
+# Expressive Grammar Language (draft)
 ## Abstract
 The Expressive Grammar Language (EGL) can be used to specify formal languages over an arbitrary alphabet.
 *EGL* can describe all context free languages and also some non context free languages by using the *Without Expression* or 
-by defining constraints.
+by defining constraints. 
+Besides, for each EGL grammar and for each string matching this grammar 
+so called *Parse Trees* are defined that describe all possible logical structures of the string and give reason of why the string has matched.
 
 ## Definitions
 An **Alphabet** is a set of distinguishable elements that are called **Characters**.
 A **String** over an *Alphabet* `A` (or just an `A`-**String**) is a finite sequence in `A`.
 **ASCII** refers to the *Alphabet* as defined by the ASCII charset.
+
+### Text Fragments
+
+A **Text Fragment** over an *Alphabet* `A` (or just an `A`-**Text Fragment**) 
+consists of an `A`-**String** `Origin` and two natural numbers `Start` and `End` which can be zero. 
+`Start` and `End` refer to the start and end positions within `Origin` hence `Start` must be lower or equal than `End`. 
+The **Text** of a *Text Fragment* is the substring of `Origin` that starts at the given position and has the length of `End` minus `Start`.
+
+The most important difference between *Strings* and *Text Fragments* is
+that even though the *Text* of two *Text Fragments* can be equal, the *Text Fragments* itself do not have to.
+Besides, two *Text Fragments* can only be concatenized if they share the same origin and the end number of the first *Text Fragment* matches with the start number of the second.
 
 ## Productions
 **Whitespaces** is an *ASCII*-*String* that consists of zero or more whitespace characters (ASCII hex-codes 09, 0A, 0D, 20).
@@ -26,7 +36,9 @@ iff it matches the *Expression* that defines the *Start Symbol*.
 
 ## Expressions
 An **Expression** is an *ASCII*-*String* that describes *Strings* over a certain *Alphabet* `A`.
-Each *Expression* type defines when an `A`-*String* matches such an *Expression*.
+Each *Expression* type defines conditions when an `A`-*String* matches such an *Expression*.
+As well as *Strings*, *Text Fragments* can match *Expressions* analogous. 
+
 In the following let `S` be an `A`-*String*.
 
 These constructs are atomic *Expressions*:
@@ -73,24 +85,19 @@ is matched by `S` iff `S` matches `Expr Expr*`.
 The mentioned operators are right-associative if not said otherwise and 
 are ordered ascending by their precedence. Thus `A \ B | C D?` and `(A \ B) | (C (D?))` are matching the same *Strings*.
 
+
 ## Parse Trees
 Let `A` be an *Alphabet* and `S` an `A`-*String* that matches a certain *Grammar* over the *Alphabet* `A`.
-
-A **Text Fragment** of a *String* `Str` is a pair of two natural numbers. The first refers to the start position within `Str` and 
-the second refers to the length of the *Text Fragment* which can be zero. Two *Text Fragments* are equal 
-iff the *Strings* they are from, their positions and their lengths are equal. 
-The **Text** of a *Text Fragment* is the substring of `Str` that starts at the given position and has the given length.
-
-Note that even though the *Text* of two *Text Fragments* can be equal, the *Text Fragments* itself do not have to.
 
 **Parse Trees** of `S` are trees whose nodes are the *Text Fragments* of `S` together with the *Symbol* the *Text Fragment* has matched with.
 The **root node** of this tree is the *Start Symbol* of the *Grammar* together with the *Text Fragment* of `S` that encloses `S`.
 
-Children of a node are constructed by matching the node's text fragment `Tf` with the *Expression* `Expr` that defines the node's *Symbol*. 
-For each *Symbol* `Sym` within `Expr` that is matched with a sub text fragment `Tfs` of `Tf`, a new node containing `Tfs` and `Sym` is added as child node. These child nodes are ordered.
+Children of a node are constructed by matching the node's text fragment `T` with the *Expression* `Expr` that defines the node's *Symbol*. 
+For each *Symbol* `Sym` within `Expr` that is matched with a sub text fragment `Ts` of `T`, a new node containing `Ts` and `Sym` is added as child. These child nodes are ordered.
 
-*Parse Trees* are like syntax trees yielded by context free grammars. 
+*Parse Trees* are very similar to syntax trees yielded by context free grammars. 
 However, *Parse Trees* do not contain terminal nodes and nodes can have arbitrary many children since symbols within *Star Expressions* can be matched multiple times.
+
 
 ## Unicode
 **Unicode** refers to the *Alphabet* as defined by the *Unicode* charset. Accordingly, all unicode *Characters* can be represented by their code point.
