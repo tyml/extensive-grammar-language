@@ -87,17 +87,23 @@ are ordered ascending by their precedence. Thus `A \ B | C D?` and `(A \ B) | (C
 
 
 ## Parse Trees
-Let `A` be an *Alphabet* and `S` an `A`-*String* that matches a certain *Grammar* over the *Alphabet* `A`.
+Let `A` be an *Alphabet* and `S` an `A`-*String* that matches a certain *Symbol* `Sym` defined in a grammar over the *Alphabet* `A`.
 
-**Parse Trees** of `S` are trees whose nodes are the *Text Fragments* of `S` together with the *Symbol* the *Text Fragment* has matched with.
-The **root node** of this tree is the *Start Symbol* of the *Grammar* together with the *Text Fragment* of `S` that encloses `S`.
+**Parse Trees** of `S` relative to `Sym` are trees whose nodes are the *Text Fragments* of `S` together with the *Symbol* the *Text Fragment* has matched with.
+The **root node** of these trees is `Sym` together with the *Text Fragment* of `S` whose *Text* equals `S`.
+
+There is a *Parse Tree* for each possible *Symbol*/*Text Fragment* matching. 
+All these possible *Parse Trees* are sorted by greediness in descending order, 
+i.e. *Star Expressions* try to match the repeating expression as much as possible, 
+*Concatenation Expressions* try to consume as much characters as possible for the first expression 
+and *Disjunction Expressions* try to match the first expression first.
 
 Children of a node are constructed by matching the node's text fragment `T` with the *Expression* `Expr` that defines the node's *Symbol*. 
-For each *Symbol* `Sym` within `Expr` that is matched with a sub text fragment `Ts` of `T`, a new node containing `Ts` and `Sym` is added as child. These child nodes are ordered.
+For each *Symbol* `SubSym` within `Expr` that is matched with a sub text fragment `Ts` of `T`, a new node containing `Ts` and `SubSym` is added as child. 
+These child nodes are ordered by the occurrence of `SubSym` in `Expr`.
 
 *Parse Trees* are very similar to syntax trees yielded by context free grammars. 
 However, *Parse Trees* do not contain terminal nodes and nodes can have arbitrary many children since symbols within *Star Expressions* can be matched multiple times.
-
 
 ## Unicode
 **Unicode** refers to the *Alphabet* as defined by the *Unicode* charset. Accordingly, all unicode *Characters* can be represented by their code point.
@@ -127,8 +133,11 @@ Only *Unicode Characters* that fall into the ASCII range can be used within the 
 Is matched by any Char with a value among the characters enumerated. Enumerations and ranges can be mixed in one set of brackets.
 
 * `"Str"` and `'Str'` where `Str` is an *ASCII-String*.  
-  Is matched by the *Unicode-String* that is equal to `Str`.
-  
+Is matched by the *Unicode-String* that is equal to `Str`.
+
+* `#Str` where `Str` is a valid name of an Unicode property like `ID_Start` or `ID_Continue`.  
+Is matched by any Char that has the given unicode property.
+
 ## Examples
 ### Grammar of Simple Function Definitions
 
