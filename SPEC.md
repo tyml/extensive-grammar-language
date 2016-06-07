@@ -135,7 +135,7 @@ Is matched by any Char with a value among the characters enumerated. Enumeration
 * `"Str"` and `'Str'` where `Str` is an *ASCII-String*.  
 Is matched by the *Unicode-String* that is equal to `Str`.
 
-* `#Str` where `Str` is a valid name of an Unicode property like `ID_Start` or `ID_Continue`.  
+* `unicode:Str` where `Str` is a valid name of an Unicode property like `ID_Start` or `ID_Continue`.  
 Is matched by any Char that has the given unicode property.
 
 ## Examples
@@ -191,7 +191,9 @@ all unicode strings that match this grammar are already ASCII strings.
 
 The following productions describe additional expressions for unicode grammars:
 ```
-AdditionalExpr ::= CodePointRef RangeList String1 String2
+AdditionalExpr ::= UnicodeProperty CodePointRef RangeList String1 String2
+
+UnicodeProperty ::= "unicode:" [a-zA-Z_][a-zA-Z0-9_]*
 
 CodePointRef ::= "#x" [0-9]+
 Ascii ::= [#x00-#x80]
