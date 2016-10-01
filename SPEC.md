@@ -1,4 +1,4 @@
-# Expressive Grammar Language (draft)
+# Expressive Grammar Language 1.0.0
 ## Abstract
 The Expressive Grammar Language (EGL) can be used to specify formal languages over an arbitrary alphabet.
 *EGL* can describe all context free languages and also some non context free languages by using the *Without Expression* or 
