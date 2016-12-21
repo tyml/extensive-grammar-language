@@ -24,7 +24,7 @@ Besides, two *Text Fragments* can only be concatenized if they share the same or
 
 ## Productions
 **Whitespaces** is an *ASCII*-*String* that consists of zero or more whitespace characters (ASCII hex-codes 09, 0A, 0D, 20).
-An **Identifier** is an *ASCII*-*String* that matches the regular expression `[a-zA-Z][a-zA-Z0-9]`. 
+An **Identifier** is an *ASCII*-*String* that matches the regular expression `[a-zA-Z][a-zA-Z0-9]*`. 
 A **Symbol** is an *Identifier* that is defined by a *Production*.  
 
 A **Production Rule** (or just **Production**) is an *ASCII*-*String* that starts with an *Identifier* that names the *Symbol* to be defined 
@@ -55,7 +55,7 @@ If `Expr1` and `Expr2` are *Expressions*, the following *ASCII*-*Strings* are *E
 
 
 * `(Expr1)`  and `Expr1` surrounded by *Whitespaces*  
-are matched by a `S` iff `S` matches `Expr1`.
+are matched by `S` iff `S` matches `Expr1`.
 
 * Disjunction: `Expr1 | Expr2`  
 is matched by `S` iff `S` matches `Expr1` or `Expr2`. This is not an exclusive disjunction, thus `S` can match both `Expr1` and `Expr2`.
@@ -120,13 +120,13 @@ A **Unicode Printable Character** is a *Unicode Character* whose hexadecimal cod
 
 Thus a *Unicode Printable Character* can be any unicode character excluding the surrogate block and the C0 and C1 control codes with the exception of a few whitespace characters.
 
-Besides, for *Unicode Grammers*, the following *ASCII Strings* are valid *Expressions*:
+For *Unicode Grammers*, the following *ASCII Strings* are valid *Expressions* too:
 
 * `#xN` where `N` is a hexadecimal integer.  
 Is matched by the *Unicode-String* that represents a single character whose code point is `N`. Leading zeros in `N` are insignificant.
   
 * `[a-zA-Z]`, `[#xN-#xN]`  
-Is matched by any *Unicode-Strings* that represent a single character with a value in the range(s) indicated (inclusive).
+Is matched by *Unicode-Strings* that represent a single character with a value in the range(s) indicated (inclusive).
 Only *Unicode Characters* that fall into the ASCII range can be used within the *Expression String*. When referring to a *Unicode Character* that does not, the code point notation can be used.
 
 * `[abc]`, `[#xN#xN#xN]`  
