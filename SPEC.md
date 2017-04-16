@@ -30,6 +30,8 @@ A **Symbol** is an *Identifier* that is defined by a *Production*.
 A **Production Rule** (or just **Production**) is an *ASCII*-*String* that starts with an *Identifier* that names the *Symbol* to be defined 
 followed by *Whitespaces*, two colons (":"), the equals sign ("="), further *Whitespaces* and an *Expression* that ends the *Production* definition.
 
+A **Parameterized Production Rule of arity n** is similar to a *Production Rule*, but the first *Identifier* is followed by an opening angle bracket ("<"), then by *n* *Identifiers* that are separated by commas (",") and then by a closing angle bracket (">"). The separating commas and the opening and closing brackets can be surrounded by *Whitespaces*. These identifiers are called *parameters*.
+
 A **Grammar** over an *Alphabet* `A` consists of *Productions* and a *Symbol* called the **Start Symbol**.
 An `A`-*String* is a member of the formal language described by a *Grammar* over an *Alphabet* `A`, 
 iff it matches the *Expression* that defines the *Start Symbol*.
@@ -47,6 +49,9 @@ These constructs are atomic *Expressions*:
 is matched by `S` iff `S` consists of exactly one *Character*.
 * `Sym`, where `Sym` is a *Symbol* defined by a *Production*,  
 is matched by `S` iff `S` matches the *Expression* that defines `Sym`.
+* `Sym`, followed by "<", *n* comma-separated *Expressions* and then followed by ">", where `Sym` is a *Symbol* defined by a *Parameterized Production Rule of arity n*,
+is matched by `S` iff `S` matches the *Expression* that defines `Sym` where all parameters are replaced by their corresponding argument.
+* `Ident`, where `Ident` is an *Identifier* that 
 
 Depending on the used *Alphabet* `A`, more atomic *Expressions* can be defined. 
 See chapter *Unicode* for further atomic *Expressions* regarding *Unicode*.
